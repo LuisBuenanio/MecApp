@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "MecApp",
+    "name": "Mec App",
     "slug": "MecApp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,10 +21,13 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.luisbt96.MecApp"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "extra": {
+      "eas": {
+        "projectId": "0b5dd692-debb-4cc8-b215-a5a8b6da2546"
+      }
     }
   }
 }
