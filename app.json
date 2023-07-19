@@ -22,6 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": ["INTERNET"],
       "package": "com.luisbt96.MecApp"
     },
     "extra": {

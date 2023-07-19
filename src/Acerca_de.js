@@ -7,6 +7,8 @@ import {
   Divider,
 } from "react-native-paper";
 import Communications from "react-native-communications";
+import config from "../config";
+
 
 class Acerca_de extends Component {
   render() {
@@ -23,11 +25,9 @@ class Acerca_de extends Component {
               <Text style={styles.titulo}>MecApp</Text>
               <Text style={styles.subtitulo}>Versión 1.0.1</Text>
               <Image
-                /* source={{ uri: config.API_URL_LOG + "/logo-fade-color.png" }} */
-
-                source={require("../assets/logo-mecanica-color.png")}
+                source={{ uri: config.url_logos + "/logo-mecanica-color.png" }}                 
                 style={styles.logo}
-              />
+              />              
             </View>
 
             <View>

@@ -6,6 +6,7 @@ import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 
 
+
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [location, setLocation] = useState(null);
