@@ -15,7 +15,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyDiHb1uyYw0P-M0e31zj-9g4ooU5TaTQyc"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +26,12 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": ["INTERNET"],
-      "package": "com.luisbt96.MecApp"
+      "package": "com.luisbt96.MecApp",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDiHb1uyYw0P-M0e31zj-9g4ooU5TaTQyc"
+        }
+      }
     },
     "extra": {
       "eas": {

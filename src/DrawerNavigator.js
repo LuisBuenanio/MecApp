@@ -18,7 +18,7 @@ function DrawerNavigator() {
   return (
     <NavigationContainer>
       <Drawer.Navigator 
-      initialRouteName="FadeApp"
+      initialRouteName="MecApp"
       drawerContent={(props) => <SideBar {...props} />}
       
       drawerHideStatusBarOnOpen     
@@ -39,7 +39,7 @@ function DrawerNavigator() {
       
       
       >
-        <Drawer.Screen name="FadeApp" component={InicioScreen} 
+        <Drawer.Screen name="MecApp" component={InicioScreen} 
           options={{ 
             headerShown: false,
             drawerLabel: 'Inicio',

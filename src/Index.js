@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, View, Button } from "react-native";
 
 const App = () => {
-  const [text, setText] = useState("PAGINA INICIAL DE INICIO");
+  const [text, setText] = useState("FALTO YO");
 
   return (
     <View>
