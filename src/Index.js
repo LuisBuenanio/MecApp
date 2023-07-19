@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Text, View, Button } from "react-native";
 
 const App = () => {
-  const [text, setText] = useState("React Native is a great framework!");
+  const [text, setText] = useState("PAGINA INICIAL DE INICIO");
 
   return (
     <View>
       <Text>{text}</Text>
-      <Button title="Change Text" onPress={() => setText("React Native is even better now!")} />
+      <Button title="Change Text" onPress={() => setText("PAGINA DE INICIO")} />
     </View>
   );
 };
