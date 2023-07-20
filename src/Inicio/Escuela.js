@@ -87,7 +87,7 @@ inf_general_escuela() {
           <TouchableOpacity
             onPress={() =>
               Communications.web(
-                urls.API_URL_PDF + "/" + this.state.escuela.malla
+                config.API_URL_PDF + "/" + this.state.escuela.malla
               )
             }
           >
