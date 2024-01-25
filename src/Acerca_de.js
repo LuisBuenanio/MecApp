@@ -90,7 +90,7 @@ class Acerca_de extends Component {
               icon="web"
               selected={true}
               selectedColor="#CA5050"
-              onPress={() => Communications.web("http://100.25.182.199")}
+              onPress={() => Communications.web("https://ingenieria-mecanica-espoch.com")}
             >
               Portal WEB
             </Chip>

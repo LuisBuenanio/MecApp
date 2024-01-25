@@ -18,7 +18,7 @@
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "http://100.25.182.199/api"
+        "EXPO_PUBLIC_API_URL": "https://ingenieria-mecanica-espoch.com/api"
       }
     }
   },

@@ -32,10 +32,11 @@ class Autoridades extends Component {
       
 
       url_decana: config.API_URL_API + "/autoridades/1",
-      url_vicedecano: config.API_URL_API + "/autoridades/3",
-      url_mecanica: config.API_URL_API + "/autoridades/5",
-      url_industrial: config.API_URL_API + "/autoridades/5",
-      url_automotriz: config.API_URL_API + "/autoridades/6",
+      url_vicedecano: config.API_URL_API + "/autoridades/2",
+      url_mecanica: config.API_URL_API + "/autoridades/3",
+      url_industrial: config.API_URL_API + "/autoridades/4",
+      url_automotriz: config.API_URL_API + "/autoridades/5",
+
 
       url_tipo_decana: config.API_URL_API + "/tipo_autoridades/1",
       url_tipo_vicedecano: config.API_URL_API + "/tipo_autoridades/2",

@@ -2,32 +2,67 @@ import React, { Component } from "react";
 import {
   StyleSheet,
   View,
+  Text,
   ImageBackground,
   ScrollView,
   ActivityIndicator,
+  FlatList,
   Dimensions,
+  Image,
 } from "react-native";
 
 import { SliderBox } from "react-native-image-slider-box";
 import * as Animatable from "react-native-animatable";
 import config from "../../config";
 
-const images = [
-  config.url_slider + "/prueba.jpg",
-  config.url_slider + "/lab_mecanica.jpg",
-  config.url_slider + "/06.jpg",
-  config.url_slider + "/team_mecanica.jpg",
-];
+/* const images = [
+  config.url_slider + "/portadad-2.jpg",
+  config.url_slider + "/prueba-finalas-dasd-asd.jpg",
+]; */
+
 
 class Inicio extends Component {
-  state = {
-    loading: true,
+  constructor(props) {
+    super(props);
+    this.state = {
+      
+      loading: false,
+      sliders: [],
+
+      url_sliders: config.API_URL_API + "/sliders",
+    };
+  }
+
+  componentDidMount() {
+    this.getSliders();
+  }
+
+  getSliders = () => {
+    this.setState({ loading: true });
+
+    fetch(this.state.url_sliders)
+    .then((res) => res.json())
+    .then(res => {
+
+        this.setState({ 
+          sliders: res.datos, 
+          loading: false 
+        });
+      })
+    .catch((error) => {
+        console.error(error);
+        this.setState({ loading: false });
+      });  
   };
+
+
 
   render() {
     
-    const { loading } = this.state;
-    if (loading) {
+    const { loading, sliders } = this.state;
+    if (!loading) {
+      const images = sliders.map((slider) => slider.url);
+
       return (
         <View style={styles.container}>
           <ImageBackground
@@ -60,7 +95,7 @@ class Inicio extends Component {
 
               <View style={styles.body}>
                 <View style={{ position: "relative", alignItems: "center" }}>
-                  <Animatable.Text
+                  {/* <Animatable.Text
                     animation="slideInDown"
                     duration={4000}
                     style={styles.text}
@@ -73,7 +108,7 @@ class Inicio extends Component {
                     style={styles.text2}
                   >
                     INGENIERÍA
-                  </Animatable.Text>
+                  </Animatable.Text> */}
                   <Animatable.Text
                     animation="slideInRight"
                     duration={4000}
@@ -94,12 +129,39 @@ class Inicio extends Component {
                     width: "98%",
                     marginTop: Dimensions.get("window").height * 0.02,
                   }}
-                ></SliderBox>
-
+                ></SliderBox> 
+                {/* <FlatList
+                        data={this.state.sliders}
+                        renderItem={({ item }) => (
+                          <View style={{}}>
+                                {item.url &&
+                                    <Image source={{ uri: item.url }} 
+                                    style={{ 
+                                      width: 460, 
+                                      height: 300, 
+                                      marginRight: 10, 
+                                      alignSelf: "center", 
+                                      alignContent: "center" 
+                                    }} />
+                                }
+                                          
+                                <View>                          
+                                  <Text style={{fontSize: 18, fontWeight: "bold",}} >{item.name}</Text>  
+                                  <Text style={{fontSize: 14}} >{item.name}</Text>
+                                  <Text style={{fontSize: 14}} >{item.name}</Text>
+                                </View>                     
+                            </View>                      
+                                        
+                        )}
+                        keyExtractor={(item, index) => index.toString()}              
+                        >  
+                </FlatList> */}
                 
-              </View>
-              
-            </ScrollView>
+                
+              </View>              
+            
+          
+        </ScrollView>
           </ImageBackground>
         </View>
       );
