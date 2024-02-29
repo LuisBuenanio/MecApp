@@ -10,9 +10,7 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import { Button } from "react-native-paper";
 import config from "../../config";
-import * as MediaLibrary from "expo-media-library";
 
 class Noticias extends Component {
   constructor(props) {
@@ -20,12 +18,14 @@ class Noticias extends Component {
     this.state = {
       loading: false,
       noticias: [],
-      selectedImage: null,
-      isModalVisible: false,
-      url_noticias: config.API_URL_API + "/noticias",
+
+      
+    selectedImage: null,
+    isModalVisible: false,
+
+    url_noticias: config.API_URL_API + "/noticias",
     };
   }
-
   componentDidMount() {
     this.getNoticias();
   }
@@ -45,25 +45,8 @@ class Noticias extends Component {
         console.error(error);
       });
   };
-
-  saveImage = async () => {
-    if (this.state.selectedImage) {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status === "granted") {
-        const asset = await MediaLibrary.createAssetAsync(
-          this.state.selectedImage
-        );
-        MediaLibrary.createAlbumAsync("MecApp", asset, false);
-        alert("Imagen guardada en el dispositivo.");
-      } else {
-        alert("Permiso denegado para guardar la imagen.");
-      }
-    }
-  };
-
   render() {
     const { loading, noticias, selectedImage, isModalVisible } = this.state;
-
     if (!loading) {
       return (
         <View style={styles.container}>
@@ -90,23 +73,23 @@ class Noticias extends Component {
                     <View style={{}}>
                       {item.portada && (
                         <TouchableOpacity
-                          onPress={() =>
-                            this.setState({
-                              selectedImage: item.portada,
-                              isModalVisible: true,
-                            })
-                          }
-                        >
-                          <Image
-                            source={{ uri: item.portada }}
-                            style={{
-                              width: 460,
-                              height: 300,
-                              marginRight: 10,
-                              alignSelf: "center",
-                              alignContent: "center",
-                            }}
-                          />
+                        onPress={() =>
+                          this.setState({
+                            selectedImage: item.portada,
+                            isModalVisible: true,
+                          })
+                        }
+                      >
+                        <Image
+                          source={{ uri: item.portada }}
+                          style={{
+                            width: 460,
+                            height: 300,
+                            marginRight: 10,
+                            alignSelf: "center",
+                            alignContent: "center",
+                          }}
+                        />
                         </TouchableOpacity>
                       )}
 
@@ -116,24 +99,24 @@ class Noticias extends Component {
                           data={item.imagenes}
                           renderItem={({ item: imagen }) => (
                             <TouchableOpacity
-                              onPress={() =>
-                                this.setState({
-                                  selectedImage: imagen,
-                                  isModalVisible: true,
-                                })
-                              }
-                            >
-                              <Image
-                                source={{ uri: imagen }}
-                                style={{
-                                  width: 100,
-                                  height: 100,
-                                  marginRight: 10,
-                                  alignSelf: "center",
-                                  alignContent: "center",
-                                }}
-                              />
-                            </TouchableOpacity>
+                            onPress={() =>
+                              this.setState({
+                                selectedImage: imagen,
+                                isModalVisible: true,
+                              })
+                            }
+                          >
+                            <Image
+                              source={{ uri: imagen }}
+                              style={{
+                                width: 100,
+                                height: 100,
+                                marginRight: 10,
+                                alignSelf: "center",
+                                alignContent: "center",
+                              }}
+                            />
+                             </TouchableOpacity>
                           )}
                           keyExtractor={(imagen, index) => index.toString()}
                         />
@@ -152,23 +135,17 @@ class Noticias extends Component {
                 ></FlatList>
               </View>
               <Modal
-                animationType="slide"
-                transparent={false}
-                visible={isModalVisible}
-              >
-                <View style={{ flex: 1, justifyContent: "center" }}>
-                  <View style={{ flex: 1 }}>
-                    <Button
-                      mode="outlined"
-                      onPress={() =>
-                        this.setState({
-                          isModalVisible: false,
-                          selectedImage: null,
-                        })
-                      }
-                    >
-                      Cerrar
-                    </Button>
+              animationType="slide"
+              transparent={false}
+              visible={isModalVisible}
+            >
+              <View style={{ flex: 1, justifyContent: "center" }}>
+                <View style={{ flex: 1 }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.setState({ isModalVisible: false, selectedImage: null })
+                    }
+                  >
                     <Image
                       source={{ uri: selectedImage }}
                       style={{
@@ -177,9 +154,10 @@ class Noticias extends Component {
                         resizeMode: "contain",
                       }}
                     />
-                  </View>
+                  </TouchableOpacity>
                 </View>
-              </Modal>
+              </View>
+            </Modal>
             </ScrollView>
           </ImageBackground>
         </View>
