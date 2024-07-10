@@ -18,14 +18,22 @@
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyDiHb1uyYw0P-M0e31zj-9g4ooU5TaTQyc"
-      }
+
+      },
+      "bundleIdentifier": "com.luisbt96.MecApp"      
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["INTERNET"],
+      "permissions": [
+        "INTERNET",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_EXTERNAL_STORAGE"
+      ],
       "package": "com.luisbt96.MecApp",
       "config": {
         "googleMaps": {
@@ -40,3 +48,4 @@
     }
   }
 }
+

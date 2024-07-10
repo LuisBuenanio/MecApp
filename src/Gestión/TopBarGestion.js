@@ -2,6 +2,7 @@ import * as React from "react";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Politica_Calidad from './Politica_Calidad';
 import Noticias from './Noticias';
+import Docentes from './Docentes';
 
 const Tab2 = createMaterialTopTabNavigator();
 
@@ -27,7 +28,9 @@ export default function AppNavigatorGestion() {
     >
       
       <Tab2.Screen name="Noticias" component={Noticias} />
-      <Tab2.Screen name="Políticas de Calidad" component={Politica_Calidad} />        
+      <Tab2.Screen name="Docentes" component={Docentes} />   
+      <Tab2.Screen name="Políticas de Calidad" component={Politica_Calidad} />   
+          
     </Tab2.Navigator>
   );
 }

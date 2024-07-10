@@ -4,15 +4,17 @@ import {
   Text,
   View,
   ImageBackground,
-  ScrollView,
   FlatList,
   Image,
   TouchableOpacity,
+  ScrollView,
   Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Button } from "react-native-paper";
 import config from "../../config";
 import * as MediaLibrary from "expo-media-library";
+import ImageModal from "./ImageModal"; // Asegúrate de importar el componente
 
 class Noticias extends Component {
   constructor(props) {
@@ -20,8 +22,11 @@ class Noticias extends Component {
     this.state = {
       loading: false,
       noticias: [],
+      expandedContentIndex: null,
       selectedImage: null,
-      isModalVisible: false,
+      isImageModalVisible: false,
+      isContentModalVisible: false,
+      contentModalText: "",
       url_noticias: config.API_URL_API + "/noticias",
     };
   }
@@ -46,145 +51,17 @@ class Noticias extends Component {
       });
   };
 
-  saveImage = async () => {
-    if (this.state.selectedImage) {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status === "granted") {
-        const asset = await MediaLibrary.createAssetAsync(
-          this.state.selectedImage
-        );
-        MediaLibrary.createAlbumAsync("MecApp", asset, false);
-        alert("Imagen guardada en el dispositivo.");
-      } else {
-        alert("Permiso denegado para guardar la imagen.");
-      }
-    }
-  };
-
   render() {
-    const { loading, noticias, selectedImage, isModalVisible } = this.state;
+    const {
+      loading,
+      noticias,
+      selectedImage,
+      isImageModalVisible,
+      isContentModalVisible,
+      contentModalText,
+    } = this.state;
 
-    if (!loading) {
-      return (
-        <View style={styles.container}>
-          <ImageBackground
-            source={require("../../assets/images/mecanica-transparente.png")}
-            style={{ flex: 1, flexDirection: "column" }}
-          >
-            <ScrollView>
-              <View style={styles.politicas_calidad}>
-                <Text style={styles.titulo}>Últimas Noticias </Text>
-              </View>
-
-              <View
-                style={{
-                  flex: 1,
-                  paddingTop: 50,
-                  paddingLeft: 5,
-                  paddingBottom: 20,
-                }}
-              >
-                <FlatList
-                  data={this.state.noticias}
-                  renderItem={({ item }) => (
-                    <View style={{}}>
-                      {item.portada && (
-                        <TouchableOpacity
-                          onPress={() =>
-                            this.setState({
-                              selectedImage: item.portada,
-                              isModalVisible: true,
-                            })
-                          }
-                        >
-                          <Image
-                            source={{ uri: item.portada }}
-                            style={{
-                              width: 460,
-                              height: 300,
-                              marginRight: 10,
-                              alignSelf: "center",
-                              alignContent: "center",
-                            }}
-                          />
-                        </TouchableOpacity>
-                      )}
-
-                      {item.imagenes && item.imagenes.length > 0 && (
-                        <FlatList
-                          horizontal
-                          data={item.imagenes}
-                          renderItem={({ item: imagen }) => (
-                            <TouchableOpacity
-                              onPress={() =>
-                                this.setState({
-                                  selectedImage: imagen,
-                                  isModalVisible: true,
-                                })
-                              }
-                            >
-                              <Image
-                                source={{ uri: imagen }}
-                                style={{
-                                  width: 100,
-                                  height: 100,
-                                  marginRight: 10,
-                                  alignSelf: "center",
-                                  alignContent: "center",
-                                }}
-                              />
-                            </TouchableOpacity>
-                          )}
-                          keyExtractor={(imagen, index) => index.toString()}
-                        />
-                      )}
-
-                      <View>
-                        <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                          {item.titulo}
-                        </Text>
-                        <Text style={{ fontSize: 14 }}>{item.entradilla}</Text>
-                        <Text style={{ fontSize: 14 }}>{item.contenido}</Text>
-                      </View>
-                    </View>
-                  )}
-                  keyExtractor={(item, index) => index.toString()}
-                ></FlatList>
-              </View>
-              <Modal
-                animationType="slide"
-                transparent={false}
-                visible={isModalVisible}
-              >
-                <View style={{ flex: 1, justifyContent: "center" }}>
-                  <View style={{ flex: 1 }}>
-                    <Button
-                      mode="outlined"
-                      onPress={() =>
-                        this.setState({
-                          isModalVisible: false,
-                          selectedImage: null,
-                        })
-                      }
-                    >
-                      Cerrar
-                    </Button>
-                    <Image
-                      source={{ uri: selectedImage }}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        resizeMode: "contain",
-                      }}
-                    />
-                  </View>
-                </View>
-              </Modal>
-            </ScrollView>
-          </ImageBackground>
-        </View>
-      );
-    } else {
+    if (loading) {
       return (
         <ImageBackground
           source={require("../../assets/images/mecanica-transparente.png")}
@@ -196,6 +73,126 @@ class Noticias extends Component {
         </ImageBackground>
       );
     }
+
+    return (
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../../assets/images/mecanica-transparente.png")}
+          style={{ flex: 1, flexDirection: "column" }}
+        >
+          <FlatList
+            data={noticias}
+            ListHeaderComponent={() => (
+              <View style={styles.politicas_calidad}>
+                <Text style={styles.titulo}>Últimas Noticias</Text>
+              </View>
+            )}
+            renderItem={({ item, index }) => (
+              <View style={styles.newsItem}>
+                <Text style={styles.newsTitle}>{item.titulo}</Text>
+
+                {item.portada && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.setState({
+                        selectedImage: item.portada,
+                        isImageModalVisible: true,
+                      })
+                    }
+                  >
+                    <Image
+                      source={{ uri: item.portada }}
+                      style={styles.portada}
+                    />
+                  </TouchableOpacity>
+                )}
+
+                <Text style={styles.newsEntradilla}>{item.entradilla}</Text>
+
+                {item.imagenes && item.imagenes.length > 0 && (
+                  <FlatList
+                    horizontal
+                    data={item.imagenes}
+                    renderItem={({ item: imagen }) => (
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.setState({
+                            selectedImage: imagen,
+                            isImageModalVisible: true,
+                          })
+                        }
+                      >
+                        <Image
+                          source={{ uri: imagen }}
+                          style={styles.thumbnail}
+                        />
+                      </TouchableOpacity>
+                    )}
+                    keyExtractor={(imagen, index) => index.toString()}
+                  />
+                )}
+
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      isContentModalVisible: true,
+                      contentModalText: item.contenido,
+                    })
+                  }
+                >
+                  <Text style={styles.readMore}>Leer más</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+
+          {/* Modal para la imagen */}
+          <ImageModal
+            isVisible={isImageModalVisible}
+            onClose={() =>
+              this.setState({
+                isImageModalVisible: false,
+                selectedImage: null,
+              })
+            }
+            selectedImage={selectedImage}
+          />
+
+          {/* Modal para el contenido */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isContentModalVisible}
+            onRequestClose={() =>
+              this.setState({
+                isContentModalVisible: false,
+                contentModalText: "",
+              })
+            }
+          >
+            <TouchableWithoutFeedback
+              onPress={() =>
+                this.setState({
+                  isContentModalVisible: false,
+                  contentModalText: "",
+                })
+              }
+            >
+              <View style={styles.modalOverlay}>
+                <TouchableWithoutFeedback>
+                  <View style={styles.contentModalContent}>
+                    <ScrollView>
+                      <Text style={styles.fullText}>{contentModalText}</Text>
+                    </ScrollView>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
+        </ImageBackground>
+      </View>
+    );
   }
 }
 
@@ -206,20 +203,6 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     flexDirection: "column",
   },
-  text: {
-    fontSize: 17,
-    fontFamily: "antic-slab",
-    color: "#4d4d4d",
-    textAlign: "justify",
-  },
-  text_press: {
-    fontSize: 17,
-    fontFamily: "antic-slab",
-    color: "#4d4d4d",
-    textAlign: "center",
-    textDecorationLine: "underline",
-  },
-
   titulo: {
     paddingTop: 20,
     paddingLeft: 10,
@@ -229,23 +212,72 @@ const styles = StyleSheet.create({
     color: "#344a72",
     textAlign: "center",
   },
-  text_mis_vis: {
-    fontSize: 17,
-    fontFamily: "antic-slab",
-    color: "#4d4d4d",
-    textAlign: "justify",
-    paddingTop: 14,
+  newsContainer: {
+    flex: 1,
+    paddingTop: 20,
     paddingLeft: 5,
-    paddingRight: 25,
+    paddingBottom: 20,
   },
-  subtitulo_mis_vis: {
-    fontSize: 17,
+  newsItem: {
+    marginBottom: 20,
+  },
+  newsTitle: {
+    fontSize: 18,
     fontWeight: "bold",
-    color: "#4d4d4d",
     textAlign: "center",
-    paddingTop: 14,
-    paddingLeft: 5,
-    paddingRight: 25,
+  },
+  portada: {
+    width: "100%",
+    height: 300,
+    alignSelf: "center",
+  },
+  newsEntradilla: {
+    fontSize: 16,
+    textAlign: "center",
+    marginVertical: 10,
+  },
+  thumbnail: {
+    width: 100,
+    height: 100,
+    marginRight: 10,
+    alignSelf: "center",
+  },
+  readMore: {
+    fontSize: 14,
+    color: "blue",
+    textAlign: "center",
+    marginTop: 10,
+    textDecorationLine: "underline",
+  },
+  newsContent: {
+    fontSize: 14,
+    textAlign: "justify",
+    color: "black",
+    margin: 20,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  contentModalContent: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+    elevation: 5,
+  },
+  fullText: {
+    fontSize: 16,
+    color: "black",
+    textAlign: "justify",
+    margin: 20,
+    backgroundColor: "#f8e4e4",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+    elevation: 5,
   },
 });
 

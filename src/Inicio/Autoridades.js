@@ -109,7 +109,7 @@ class Autoridades extends Component {
           >
             <ScrollView>
               <View style={styles.autoridades}>
-                <Text style={styles.titulo}>Autoridades de la Facultad</Text>
+                <Text style={styles.titulo}>Autoridades</Text>
               </View>
 
               <View style={{ alignSelf: "center", paddingTop: 20 }}>
@@ -188,63 +188,7 @@ class Autoridades extends Component {
                     </Title>
                   </Card.Content>
                 </Card>
-              </View>
-
-              <View style={{ alignSelf: "center", paddingTop: 30 }}>
-                <Card style={{ height: 310, width: 260, paddingTop: 10 }}>
-                  <Card.Cover
-                    style={{ height: 170, width: 140, alignSelf: "center" }}
-                    source={{
-                      uri:
-                      config.API_URL_AUT +
-                        "/" +
-                        this.state.industrial.foto,
-                    }}
-                  />
-                  <Card.Content style={{ alignSelf: "center" }}>
-                    <Paragraph
-                      style={{
-                        fontSize: 16,
-                        textAlign: "center",
-                        fontFamily: "antic-slab",
-                      }}
-                    >
-                      {this.state.industrial.nombre}
-                    </Paragraph>
-                    <Title style={{ fontSize: 18, textAlign: "center" }}>
-                      {this.state.tipo_industrial.descripcion}
-                    </Title>
-                  </Card.Content>
-                </Card>
-              </View>
-
-              <View style={{ alignSelf: "center", paddingTop: 30 }}>
-                <Card style={{ height: 310, width: 260, paddingTop: 10 }}>
-                  <Card.Cover
-                    style={{ height: 190, width: 170, alignSelf: "center" }}
-                    source={{
-                      uri:
-                      config.API_URL_AUT +
-                        "/" +
-                        this.state.automotriz.foto,
-                    }}
-                  />
-                  <Card.Content style={{ alignSelf: "center" }}>
-                    <Paragraph
-                      style={{
-                        fontSize: 16,
-                        textAlign: "center",
-                        fontFamily: "antic-slab",
-                      }}
-                    >
-                      {this.state.automotriz.nombre}
-                    </Paragraph>
-                    <Title style={{ fontSize: 18, textAlign: "center" }}>
-                      {this.state.tipo_automotriz.descripcion}
-                    </Title>
-                  </Card.Content>
-                </Card>
-              </View>       
+              </View> 
             </ScrollView>
           </ImageBackground>
         </View>
