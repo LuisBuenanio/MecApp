@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Platform, View, ActivityIndicator, Text } from 'react-native';
+import "react-native-gesture-handler";
+import React, { useState, useEffect } from "react";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { NavigationContainer } from '@react-navigation/native';
 import DrawerNavigator from "./src/DrawerNavigator";
 import * as Font from "expo-font";
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as MediaLibrary from "expo-media-library";
+import { AuthProvider } from './src/context/AuthContext';
 
-export default function App() {
+function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     if (!fontsLoaded) {
@@ -51,11 +52,27 @@ export default function App() {
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.loader}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
 
-  return <DrawerNavigator />;
+  return (
+    <AuthProvider>
+      <NavigationContainer>
+        <DrawerNavigator />
+      </NavigationContainer>
+    </AuthProvider>
+  );
 }
+
+const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default App;
