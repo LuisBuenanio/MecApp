@@ -9,12 +9,13 @@ import { AuthContext } from './context/AuthContext';
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
   return (
     <Drawer.Navigator
-      initialRouteName="Inicio"
+      initialRouteName="MecApp"
       drawerContent={(props) => <SideBar {...props} />}
+      drawerHideStatusBarOnOpen
       screenOptions={{
         drawerActiveBackgroundColor: "#ccd4e3",
         drawerInactiveTintColor: "#000000",
@@ -26,52 +27,56 @@ function DrawerNavigator() {
         },
       }}
     >
-      <Drawer.Screen
-        name="Inicio"
-        component={InicioScreen}
+      <Drawer.Screen name="MecApp" component={InicioScreen}
         options={{
           headerShown: false,
           drawerLabel: 'Inicio',
           drawerIcon: () => (
             <MaterialCommunityIcons name="home" size={26} color={"#000000"} />
           ),
-        }}
-      />
-      <Drawer.Screen
-        name="Acerca de"
-        component={AcercadeScreen}
+        }} />
+        <Drawer.Screen name="Acerca de" component={AcercadeScreen}
         options={{
           headerShown: false,
           drawerLabel: 'Acerca de',
           drawerIcon: () => (
             <MaterialCommunityIcons name="account-question" size={26} color={"#000000"} />
           ),
-        }}
-      />
-      <Drawer.Screen
-        name="Contáctanos"
-        component={ContactanosScreen}
+        }} />
+
+      <Drawer.Screen name="Contáctanos" component={ContactanosScreen}
         options={{
           headerShown: false,
           drawerLabel: 'Contáctanos',
           drawerIcon: () => (
             <MaterialCommunityIcons name="account-supervisor-circle" size={26} color={"#000000"} />
           ),
-        }}
-      />
-      {user && (
-        <Drawer.Screen
-          name="Chat"
-          component={ChatScreen}
-          options={{
-            title: "Chat",
-            drawerIcon: ({ color }) => (
-              <MaterialCommunityIcons name="chat" color={color} size={24} />
-            ),
-          }}
-        />
-      )}
-      {!user && (
+        }} />
+
+      {user ? (
+        <>
+          <Drawer.Screen
+            name="Chat"
+            component={ChatScreen}
+            options={{
+              title: "Chat",
+              drawerIcon: ({ color }) => (
+                <MaterialCommunityIcons name="chat" color={color} size={24} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="Logout"
+            component={LogoutScreen}
+            options={{
+              title: "Cerrar Sesión",
+              drawerIcon: ({ color }) => (
+                <MaterialCommunityIcons name="logout" color={color} size={24} />
+              ),
+            }}
+          />
+        </>
+      ) : (
         <Drawer.Screen
           name="Login"
           component={LoginScreen}
@@ -85,6 +90,16 @@ function DrawerNavigator() {
       )}
     </Drawer.Navigator>
   );
+}
+
+function LogoutScreen() {
+  const { logout } = useContext(AuthContext);
+
+  React.useEffect(() => {
+    logout();
+  }, []);
+
+  return null;
 }
 
 export default DrawerNavigator;
