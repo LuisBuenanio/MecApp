@@ -1,26 +1,105 @@
-import React, { useContext } from 'react';
-import { View, Text, Button, StyleSheet, ImageBackground } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import { AuthContext } from '../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
 const ChatScreen = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+  const navigation = useNavigation();
+  const [searchQuery, setSearchQuery] = useState('');
 
-  if (!user) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.message}>No estás autenticado</Text>
-      </View>
-    );
-  }
+  // Aquí podrías obtener estos chats desde un backend o estado global
+  const individualChats = [
+    { id: '1', name: 'Alice', lastMessage: 'Hello there!' },
+    { id: '2', name: 'Bob', lastMessage: 'How are you?' },
+  ];
+
+  const groupChats = [
+    { id: '1', name: 'Study Group', lastMessage: 'Meeting at 5 PM' },
+    { id: '2', name: 'Project Team', lastMessage: 'Deadline is tomorrow' },
+  ];
+
+  const filteredIndividualChats = individualChats.filter(chat =>
+    chat.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredGroupChats = groupChats.filter(chat =>
+    chat.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleChatPress = (chat) => {
+    if (chat.type === 'individual') {
+      navigation.navigate('ChatRoom', {
+        chatId: chat.id,
+        chatName: chat.name,
+      });
+    } else if (chat.type === 'group') {
+      navigation.navigate('GroupChatRoom', {
+        chatId: chat.id,
+        chatName: chat.name,
+      });
+    }
+  };
 
   return (
     <ImageBackground
-    source={require("../../assets/images/mecanica-transparente.png")} // Cambia esta URL a la ruta de tu imagen de fondo
+      source={require("../../assets/images/mecanica-transparente.png")}
       style={styles.background}
     >
       <View style={styles.container}>
-        <Text style={styles.message}>Bienvenido, {user.name}!</Text>
-        <Button title="Cerrar Sesión" onPress={logout} />
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Bienvenido, {user.name}</Text>
+          <TouchableOpacity
+            style={styles.settingsButton}
+            onPress={() => navigation.navigate('PerfilAjustesScreen')}
+          >
+            <FontAwesome name="cog" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Buscar chats..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          selectionColor="black"
+        />
+
+        <Text style={styles.sectionHeader}>Chats Individuales</Text>
+        <FlatList
+          data={filteredIndividualChats}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleChatPress({ ...item, type: 'individual' })}>
+              <View style={styles.chatItem}>
+                <Text style={styles.chatName}>{item.name}</Text>
+                <Text style={styles.chatMessage}>{item.lastMessage}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
+        <Text style={styles.sectionHeader}>Chats Grupales</Text>
+        <FlatList
+          data={filteredGroupChats}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleChatPress({ ...item, type: 'group' })}>
+              <View style={styles.chatItem}>
+                <Text style={styles.chatName}>{item.name}</Text>
+                <Text style={styles.chatMessage}>{item.lastMessage}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={() => navigation.navigate('CrearChatScreen')}
+        >
+          <FontAwesome name="plus" size={24} color="white" />
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -29,21 +108,60 @@ const ChatScreen = () => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover', // O 'contain' según tus necesidades
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   container: {
-    width: '80%',
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo con opacidad
     padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo blanco con opacidad
-    borderRadius: 10,
-    alignItems: 'center',
   },
-  message: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 20,
+  },
+  headerText: {
+    fontSize: 24,
+    color: 'white',
+  },
+  settingsButton: {
+    padding: 10,
+  },
+  searchInput: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
+  },
+  sectionHeader: {
+    fontSize: 20,
+    color: 'white',
+    marginVertical: 10,
+  },
+  chatItem: {
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  chatName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  chatMessage: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: '#344a72',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

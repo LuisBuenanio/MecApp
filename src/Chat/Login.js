@@ -36,6 +36,7 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          selectionColor="black"
         />
         <TextInput
           style={styles.input}
@@ -43,6 +44,7 @@ const LoginScreen = ({ navigation }) => {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          selectionColor="black"
         />
         <Button title={loading ? 'Cargando...' : 'Iniciar Sesión'} onPress={handleLogin} disabled={loading} />
       </View>
