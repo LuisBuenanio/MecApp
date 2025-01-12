@@ -1,49 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, Modal, TouchableOpacity, ImageBackground, BackHandler, ActivityIndicator } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Modal } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import Config from '../../config';
-const API_URL = Config.API_URL;
+const users = [
+  { id: '1', name: 'Alice' },
+  { id: '2', name: 'Bob' },
+  { id: '3', name: 'Charlie' },
+];
 
 const CrearGrupoScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [groupName, setGroupName] = useState('');
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado de carga
-  const [error, setError] = useState(null);
 
-   useEffect(() => {
-      const fetchUsers = async () => {
-        try {
-          const response = await fetch(API_URL + "/users");
-          const data = await response.json();
-    
-          // Asegúrate de acceder al array dentro de "users"
-          if (data.users) {
-            setUsers(data.users); // Aquí `data.users` es el array
-          } else {
-            console.error("Formato de respuesta inesperado:", data);
-            setError("Los datos no tienen el formato esperado.");
-          }
-        } catch (err) {
-          console.error("Error al obtener usuarios:", err);
-          setError("Error al obtener los datos del servidor.");
-        } finally {
-          setLoading(false); // Detén el indicador de carga
-        }
-      };
-    
-      fetchUsers();
-    }, []);
-
-  const filteredUsers = users.
-  filter(user =>user.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  .slice(0, 10)
-  ;
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const toggleUserSelection = (userId) => {
     setSelectedUsers((prevSelected) =>
@@ -83,7 +56,6 @@ const CrearGrupoScreen = ({ navigation }) => {
           onChangeText={setSearchQuery}
           selectionColor="black"
         />
-        
         <FlatList
           data={filteredUsers}
           keyExtractor={(item) => item.id}

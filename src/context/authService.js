@@ -48,6 +48,51 @@ export const logout = async () => {
   }
 };
 
+export const fetchUsers = async () => {
+  try {
+    const token = await getToken();
+    const response = await axios.get(`${API_URL}/users`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error.response ? error.response.data : error;
+  }
+};
+
+export const sendMessage = async (chatId, message) => {
+  try {
+    const token = await getToken();
+    const response = await axios.post(
+      `${API_URL}/chats/${chatId}/messages`,
+      { message },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw error.response ? error.response.data : error;
+  }
+};
+
+export const getUserChats = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/chats`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Devuelve los chats individuales y grupales
+  } catch (error) {
+    console.error('Error al obtener los chats del usuario:', error.response?.data);
+    throw error;
+  }
+};
+
+
 const performLogout = async () => {
   // Implementa la lógica para eliminar el token almacenado
 };

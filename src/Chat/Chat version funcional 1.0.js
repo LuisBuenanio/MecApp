@@ -1,15 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  FlatList, 
-  TextInput, 
-  TouchableOpacity, 
-  ActivityIndicator, 
-  ImageBackground, 
-  Alert 
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
@@ -23,20 +13,19 @@ const ChatScreen = () => {
   const [groupChats, setGroupChats] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch chats from the backend
   useEffect(() => {
+    // Función para obtener los chats desde el backend
     const fetchChats = async () => {
       try {
         const response = await axios.get('https://ingenieria-mecanica-espoch.com/api/chats', {
           headers: {
-            'Authorization': `Bearer ${user.token}`
+            'Authorization': `Bearer ${user.token}` // Suponiendo que tienes un token de usuario en AuthContext
           }
         });
         setIndividualChats(response.data.individual_chats);
         setGroupChats(response.data.group_chats);
       } catch (error) {
         console.error('Error fetching chats:', error);
-        Alert.alert('Error', 'No se pudieron cargar los chats. Intente nuevamente.');
       } finally {
         setLoading(false);
       }
@@ -52,31 +41,25 @@ const ChatScreen = () => {
   const filteredGroupChats = groupChats.filter(chat =>
     !searchQuery || chat.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
+  
 
-  const handleChatPress = async (chat) => {
-    try {
-      const response = await axios.get(`https://ingenieria-mecanica-espoch.com/api/chats/${chat.id}/messages`, {
-        headers: { 'Authorization': `Bearer ${user.token}` }
-      });
-      const messages = response.data.messages;
-      navigation.navigate(chat.type === 'individual' ? 'ChatRoom' : 'GroupChatRoom', {
+  const handleChatPress = (chat) => {
+    if (chat.type === 'individual') {
+      navigation.navigate('ChatRoom', {
         chatId: chat.id,
         chatName: chat.name,
-        messages,
       });
-    } catch (error) {
-      console.error('Error fetching chat messages:', error);
-      Alert.alert('Error', 'No se pudieron cargar los mensajes.');
+    } else if (chat.type === 'group') {
+      navigation.navigate('GroupChatRoom', {
+        chatId: chat.id,
+        chatName: chat.name,
+      });
     }
   };
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="white" />
-        <Text style={styles.loadingText}>Cargando chats...</Text>
-      </View>
-    );
+    return <Text style={styles.loading}>Cargando chats...</Text>;
   }
 
   return (
@@ -106,15 +89,12 @@ const ChatScreen = () => {
         <Text style={styles.sectionHeader}>Chats Individuales</Text>
         <FlatList
           data={filteredIndividualChats}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleChatPress({ ...item, type: 'individual' })}>
               <View style={styles.chatItem}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  {item.isOnline && <View style={styles.onlineIndicator} />}
-                  <Text style={styles.chatName}>{item.name}</Text>
-                </View>
-                <Text style={styles.chatMessage}>{item.last_message || 'No hay mensajes aún.'}</Text>
+                <Text style={styles.chatName}>{item.name}</Text>
+                <Text style={styles.chatMessage}>{item.last_message}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -123,12 +103,12 @@ const ChatScreen = () => {
         <Text style={styles.sectionHeader}>Chats Grupales</Text>
         <FlatList
           data={filteredGroupChats}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleChatPress({ ...item, type: 'group' })}>
               <View style={styles.chatItem}>
                 <Text style={styles.chatName}>{item.name}</Text>
-                <Text style={styles.chatMessage}>{item.last_message || 'No hay mensajes aún.'}</Text>
+                <Text style={styles.chatMessage}>{item.last_message}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -151,7 +131,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo con opacidad
     padding: 20,
   },
   header: {
@@ -192,13 +172,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
   },
-  onlineIndicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: 'green',
-    marginRight: 8,
-  },
   floatingButton: {
     position: 'absolute',
     bottom: 30,
@@ -210,15 +183,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
+  loading: {
     color: 'white',
     fontSize: 18,
-    marginTop: 10,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 
